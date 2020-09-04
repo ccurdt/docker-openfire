@@ -71,10 +71,13 @@ docker build -t ccurdt/openfire github.com/ccurdt/docker-openfire
 Start Openfire using:
 
 ```bash
-docker run --name openfire -d --restart unless-stopped \
-  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 --publish 7070:7070 --publish 7443:7443
+docker run --restart unless-stopped \
+  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 --publish 7070:7070 --publish 7443:7443 \
   --volume openfiredata:/var/lib/openfire \
-  ccurdt/openfire:4.5.3
+  --name openfire \
+  ccurdt/openfire:latest \
+  -XX:+UnlockExperimentalVMOptions \
+  -XX:+UseCGroupMemoryLimitForHeap
 ```
 
 *Alternatively, you can use the sample [docker-compose.yml](docker-compose.yml) file to start the container using [Docker Compose](https://docs.docker.com/compose/)*
