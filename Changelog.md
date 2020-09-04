@@ -1,7 +1,7 @@
 # Changelog
 **4.5.3**
 - openfire: upgrade to 4.5.3
-- openjdk: upgrade to 8u265
+- openjre: upgrade  to adoptopenjdk/openjdk8:jre8u262-b10-debianslim for arm support
 
 **4.4.4**
 - openfire: upgrade to 4.4.4

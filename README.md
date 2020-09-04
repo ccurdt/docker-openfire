@@ -1,4 +1,4 @@
-# gizmotronic/openfire:4.4.4
+# ccurdt/openfire:4.5.3
 
 - [Introduction](#introduction)
   - [Contributing](#contributing)
@@ -54,16 +54,16 @@ If the above recommendations do not help then [report your issue](../../issues/n
 
 ## Installation
 
-Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/gizmotronic/openfire) and is the recommended method of installation.
+Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/ccurdt/openfire) and is the recommended method of installation.
 
 ```bash
-docker pull gizmotronic/openfire:4.4.4
+docker pull ccurdt/openfire:4.5.3
 ```
 
 Alternatively you can build the image yourself.
 
 ```bash
-docker build -t gizmotronic/openfire github.com/gizmotronic/docker-openfire
+docker build -t ccurdt/openfire github.com/ccurdt/docker-openfire
 ```
 
 ## Quickstart
@@ -71,10 +71,10 @@ docker build -t gizmotronic/openfire github.com/gizmotronic/docker-openfire
 Start Openfire using:
 
 ```bash
-docker run --name openfire -d --restart=always \
-  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 \
-  --volume /srv/docker/openfire:/var/lib/openfire \
-  gizmotronic/openfire:4.4.4
+docker run --name openfire -d --restart unless-stopped \
+  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 --publish 7070:7070 --publish 7443:7443
+  --volume openfiredata:/var/lib/openfire \
+  ccurdt/openfire:4.5.3
 ```
 
 *Alternatively, you can use the sample [docker-compose.yml](docker-compose.yml) file to start the container using [Docker Compose](https://docs.docker.com/compose/)*
@@ -90,8 +90,8 @@ For the Openfire to preserve its state across container shutdown and startup you
 SELinux users should update the security context of the host mountpoint so that it plays nicely with Docker:
 
 ```bash
-mkdir -p /srv/docker/openfire
-chcon -Rt svirt_sandbox_file_t /srv/docker/openfire
+mkdir -p /var/lib/docker/volumes/openfiredata
+chcon -Rt svirt_sandbox_file_t /var/lib/docker/volumes/openfire
 ```
 
 ## Java VM options
@@ -99,10 +99,13 @@ chcon -Rt svirt_sandbox_file_t /srv/docker/openfire
 You may append options to the startup command to configure the JVM:
 
 ```bash
-docker run -name openfire -d \
-  [DOCKER_OPTIONS] \
-  gizmotronic/openfire:4.4.4 \
-  -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode
+docker run --restart unless-stopped \
+  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 --publish 7070:7070 --publish 7443:7443 \
+  --volume openfiredata:/var/lib/openfire \
+  --name openfire
+  ccurdt/openfire:latest \
+  -XX:+UnlockExperimentalVMOptions \
+  -XX:+UseCGroupMemoryLimitForHeap
 ```
 
 ## Logs
@@ -122,7 +125,7 @@ To upgrade to newer releases:
   1. Download the updated Docker image:
 
   ```bash
-  docker pull gizmotronic/openfire:4.4.4
+  docker pull ccurdt/openfire:4.5.3
   ```
 
   2. Stop the currently running image:
@@ -142,7 +145,7 @@ To upgrade to newer releases:
   ```bash
   docker run -name openfire -d \
     [OPTIONS] \
-    gizmotronic/openfire:4.4.4
+    ccurdt/openfire:4.5.3
   ```
 
 ## Shell Access
@@ -157,3 +160,5 @@ docker exec -it openfire bash
 
   * http://www.igniterealtime.org/projects/openfire/
   * https://library.linode.com/communications/xmpp/openfire/ubuntu-12.04-precise-pangolin
+  * https://github.com/gizmotronic/docker-openfire
+  * https://hub.docker.com/r/adoptopenjdk/openjdk8
